@@ -7,10 +7,12 @@ import com.auditbackend.Audit.Backend.Implementaion.Services.UserService;
 import com.auditbackend.Audit.Backend.Implementaion.repositories.RoleRepository;
 import com.auditbackend.Audit.Backend.Implementaion.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
