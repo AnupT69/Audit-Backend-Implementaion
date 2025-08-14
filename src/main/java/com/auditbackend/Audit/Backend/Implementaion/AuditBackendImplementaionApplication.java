@@ -8,6 +8,7 @@ public class AuditBackendImplementaionApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AuditBackendImplementaionApplication.class, args);
+		
 	}
 
 }
