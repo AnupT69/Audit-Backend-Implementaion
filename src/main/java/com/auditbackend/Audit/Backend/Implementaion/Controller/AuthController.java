@@ -5,11 +5,14 @@ import com.auditbackend.Audit.Backend.Implementaion.Models.Role;
 import com.auditbackend.Audit.Backend.Implementaion.Models.User;
 import com.auditbackend.Audit.Backend.Implementaion.Security.JWT.JwtUtils;
 import com.auditbackend.Audit.Backend.Implementaion.Security.Services.UserDetailsimpl;
+import com.auditbackend.Audit.Backend.Implementaion.Services.AuditLogService;
 import com.auditbackend.Audit.Backend.Implementaion.Services.UserService;
 import com.auditbackend.Audit.Backend.Implementaion.Utils.AuthUtil;
 import com.auditbackend.Audit.Backend.Implementaion.dtos.*;
 import com.auditbackend.Audit.Backend.Implementaion.repositories.RoleRepository;
 import com.auditbackend.Audit.Backend.Implementaion.repositories.UserRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,9 +58,12 @@ public class AuthController {
 
     @Autowired
     AuthUtil authUtil;
+    
+    @Autowired
+    AuditLogService auditLogService;
 
     @PostMapping("/public/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest,HttpServletRequest request){
         Authentication authentication;
         try{
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
@@ -78,12 +84,13 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream().map(item->item.getAuthority()).collect(Collectors.toList());
 
         LoginResponse response = new LoginResponse(userDetails.getUsername(),roles,jwtToken);
-
+        String ipAddress = extractClientIp(request);
+        auditLogService.logLoginUser(loginRequest.getUsername(),ipAddress);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/public/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest,HttpServletRequest request) {
         if (userRepository.existsByUserName(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
@@ -124,6 +131,8 @@ public class AuthController {
         }
         user.setRole(role);
         userRepository.save(user);
+        String ipAddress = extractClientIp(request);
+        auditLogService.logRegisterUser(signUpRequest.getUsername(), ipAddress);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
@@ -152,5 +161,15 @@ public class AuthController {
 
         return ResponseEntity.ok().body(response);
     }
+    
+    private String extractClientIp(HttpServletRequest request) {
+    	String ipAddress = request.getHeader("X-Forwarded-For");
+    	if(ipAddress == null || ipAddress.isEmpty())
+    	{
+    		ipAddress = request.getRemoteAddr();
+    	}
+    	return ipAddress;
+    }
+    
 
 }
