@@ -43,6 +43,8 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.disable())
+         
+            .cors(cors -> {})
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/audit/**").hasRole("ADMIN")
@@ -53,6 +55,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .httpBasic(httpBasic -> httpBasic.disable())
             .formLogin(form -> form.disable());
+        
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 

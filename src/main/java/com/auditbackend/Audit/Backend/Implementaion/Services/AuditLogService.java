@@ -13,5 +13,7 @@ public interface AuditLogService {
 	
 	void logRegisterUser(String username,String ipAddress);
 	
+	void logLogoutUser(String username);
+	
 
 }

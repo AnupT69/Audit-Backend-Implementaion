@@ -136,6 +136,13 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
+    
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetails userDetails){
+    	User user = userService.findByUserName(userDetails.getUsername());
+    	auditLogService.logLogoutUser(user.getUserName());
+    	return ResponseEntity.ok(new MessageResponse("User logout"));
+    }
 
     @GetMapping("/user")
     public ResponseEntity<?> getUserDetails(@AuthenticationPrincipal UserDetails userDetails) {

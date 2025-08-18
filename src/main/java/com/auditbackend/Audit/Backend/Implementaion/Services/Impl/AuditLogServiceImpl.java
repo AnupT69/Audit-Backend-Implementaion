@@ -52,6 +52,18 @@ public class AuditLogServiceImpl implements AuditLogService{
 		auditRepository.save(log);
 		
 	}
+
+	@Override
+	public void logLogoutUser(String username) {
+		// TODO Auto-generated method stub
+		AuditLog log = new AuditLog();
+		log.setAuditAction(AuditAction.LOGOUT);
+		log.setUsername(username);
+		log.setIpAddress("");
+		log.setTimeStamp(LocalDateTime.now());
+		auditRepository.save(log);
+		
+	}
 	
 
 }
