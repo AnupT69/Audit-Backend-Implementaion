@@ -29,7 +29,7 @@ The system exposes RESTful endpoints for interacting with audit logs.
 - **GET** `/api/audits`
 - **Description:** List of Audits .
 
-##### Example JSON Request
+
 
 
 ##### Example JSON Response
@@ -151,6 +151,56 @@ The system exposes RESTful endpoints for interacting with audit logs.
 
 ---
 
+## How to Run Locally
+- Clone this repo and run locally in your IDE.
+- For instant login make request like this:
+ #### **Signin**
+
+- **GET** `http://localhost:8080/api/auth/public/signin`
+- **Description:** login .
+  ##### Example JSON Request
+  ```json
+  {
+  "username":"Anup",
+  "password":"admin"
+  }
+
+  ```
+  ##### Example JSON Response
+  ```json
+  {
+   "username": "Anup",
+   "roles":[
+   "ROLE_ADMIN"
+     ],
+   "jwtToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBbnVwIiwicm9sZXMiOiJST0xFX0FETUlOIiwiaWF0IjoxNzU1ODMwNzU3LCJleHAiOjE3NTU4NDc5NTd9.5IU9kBU5qBzxaje_q7aVeVxqHw0smxC226f67wh6o00"
+  }
+
+  ```
+
+  - For Registering new user make request like this:
+ #### **Signup**
+
+- **GET** `http://localhost:8080/api/auth/public/signup`
+- **Description:** login .
+  ##### Example JSON Request
+- The password length must be equal or more than 6
+- Username length must be more than or equal to 3
+  ```json
+  {
+  "username":"newUser",
+  "email":"newUser@gmail.com",
+  "password":"123456"
+}
+  ```
+  ##### Example JSON Response
+  ```json
+  {
+"message": "User registered successfully!"
+  }
+
+  ```
+ 
 
 ## Technologies Used
 
