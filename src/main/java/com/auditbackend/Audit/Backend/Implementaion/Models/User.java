@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
-public class User {
+public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,7 +68,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.MERGE})
     @JoinColumn(name = "role_id",referencedColumnName = "role_id")
-    @JsonBackReference
+//    @JsonBackReference
     @ToString.Exclude
     private Role role;
     public User(String userName,String email,String password){

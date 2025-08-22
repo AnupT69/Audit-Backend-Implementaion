@@ -1,5 +1,6 @@
 package com.auditbackend.Audit.Backend.Implementaion.Controller;
 
+import com.auditbackend.Audit.Backend.Implementaion.CustomAnnotation.Auditable;
 import com.auditbackend.Audit.Backend.Implementaion.Models.AppRole;
 import com.auditbackend.Audit.Backend.Implementaion.Models.Role;
 import com.auditbackend.Audit.Backend.Implementaion.Models.User;
@@ -59,10 +60,10 @@ public class AuthController {
     @Autowired
     AuthUtil authUtil;
     
-    @Autowired
-    AuditLogService auditLogService;
+    
 
     @PostMapping("/public/signin")
+    @Auditable(action = "LOGIN",entityType = "User",module = "Authentication")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest,HttpServletRequest request){
         Authentication authentication;
         try{
@@ -85,11 +86,12 @@ public class AuthController {
 
         LoginResponse response = new LoginResponse(userDetails.getUsername(),roles,jwtToken);
         String ipAddress = extractClientIp(request);
-        auditLogService.logLoginUser(loginRequest.getUsername(),ipAddress);
+//        auditLogService.logLoginUser(loginRequest.getUsername(),ipAddress);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/public/signup")
+    @Auditable(action = "REGISTER",entityType = "User",module = "Authentication")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest,HttpServletRequest request) {
         if (userRepository.existsByUserName(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
@@ -132,15 +134,16 @@ public class AuthController {
         user.setRole(role);
         userRepository.save(user);
         String ipAddress = extractClientIp(request);
-        auditLogService.logRegisterUser(signUpRequest.getUsername(), ipAddress);
+//        auditLogService.logRegisterUser(signUpRequest.getUsername(), ipAddress);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
     
     @GetMapping("/logout")
+    @Auditable(action = "LOGOUT",entityType = "User",module = "Authentication")
     public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetails userDetails){
     	User user = userService.findByUserName(userDetails.getUsername());
-    	auditLogService.logLogoutUser(user.getUserName());
+//    	auditLogService.logLogoutUser(user.getUserName());
     	return ResponseEntity.ok(new MessageResponse("User logout"));
     }
 
