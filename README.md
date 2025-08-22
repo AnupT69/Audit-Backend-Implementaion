@@ -191,12 +191,12 @@ The system exposes RESTful endpoints for interacting with audit logs.
   "username":"newUser",
   "email":"newUser@gmail.com",
   "password":"123456"
-}
+  }
   ```
   ##### Example JSON Response
   ```json
   {
-"message": "User registered successfully!"
+   "message": "User registered successfully!"
   }
 
   ```
